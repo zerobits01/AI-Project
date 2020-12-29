@@ -116,3 +116,28 @@ media/
 # **/migrations/**
 # !**/migrations
 # !**/migrations/__init__.py
+
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+./ai-front/node_modules
+./ai-front/.pnp
+./ai-front.pnp.js
+
+# testing
+./ai-front/coverage
+
+# production
+/build
+
+# misc
+./ai-front/.DS_Store
+./ai-front/.env.local
+./ai-front/.env.development.local
+./ai-front/.env.test.local
+./ai-front/.env.production.local
+
+./ai-front/npm-debug.log*
+./ai-front/yarn-debug.log*
+./ai-front/yarn-error.log*
