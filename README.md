@@ -9,17 +9,41 @@ This gonna be a solution for maze using algorithms:
 # How to up and run?
 
 first install virtualbox and vagrant on your system.
-follow the steps below.
+then follow the steps below.
 
 ## create the development server
 
-> vagrant up
+> host# vagrant up
 
-> vagrant ssh
+> host# vagrant ssh
+
+## install dependencies and run project
+
+> box# python -m venv ~/env # creating a virtual env for django
+
+> box# source ~/env/bin/activate # activating the vemv
+
+> box# cd /vagrant/ # going to project path in our vagrant box
+
+> box# pip install -r requirements # installing the requirements
+
+> box# python manage.py runserver 0.0.0.0:8000 # running the server
+
+> box# exit # to exit the box
+
+> host# vagrant halt
 
 
-## run the project
+## running second time
 
-> cd /vagrant/
+> host# vagrant up
 
-> python manage.py runserver 0.0.0.0:8000
+> host# vagrant ssh
+
+> box# cd /vagrant
+
+> box# pip install -r requirements # installing the requirements
+
+> box# python manage.py runserver 0.0.0.0:8000 # running the server
+
+halt the machine after doing your job
