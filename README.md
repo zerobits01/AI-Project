@@ -46,4 +46,4 @@ then follow the steps below.
 
 > box# python manage.py runserver 0.0.0.0:8000 # running the server
 
-halt the machine after doing your job
+halt the machine after doing your job.
