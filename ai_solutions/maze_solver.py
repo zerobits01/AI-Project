@@ -454,4 +454,5 @@ class MazeSolver:
 """
 points to pay attention
 - set is not serializable so use list at last step
+- checking advance debugging in python
 """
