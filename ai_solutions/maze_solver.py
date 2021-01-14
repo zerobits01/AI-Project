@@ -127,7 +127,7 @@ class MazeSolver:
         '''
             this will create the child nodes then return them as a list
             @param node: the node we wanna search for the children
-            @type node: TreeNode
+            @type node: GraphNode
             @returns: list of children
             @rtype: list
         '''
@@ -173,7 +173,7 @@ class MazeSolver:
         '''
             this will create specific child of the given node
             @param node: the node we wanna search for the children
-            @type node: TreeNode
+            @type node: GraphNode
             @param which_child: L-eft, R-ight, B-ottom, T-op
             @type which_child: char
             @returns: list of children
@@ -421,7 +421,7 @@ class MazeSolver:
             @returns : solution path, cost, count of explored set  or False
         '''
 
-        # Store explored_set TreeNodes for each iteration
+        # Store explored_set GraphNodes for each iteration
         explored_set = set()
 
         # Repeatedly depth-limit search till the reaches the goal's depth
@@ -447,8 +447,50 @@ class MazeSolver:
             
             @returns : solution path, cost, count of explored set 
         '''
-        queue = collections.deque([self.SRC])
-        explored_set = set()
+        try:
+            open = []
+            explored_set = []
+
+            open.append(self.SRC)
+
+            while open:
+                current_cell = open[0]
+                open.remove(current_cell)
+                if current_cell.coordinate not in explored_set:
+                    explored_set.append(current_cell.coordinate)
+
+                if current_cell.coordinate == self.DST.coordinate:
+                        path, cost = self.create_path(current_cell)
+                        print(20*'#' + '\n' + "solved" + '\n' + 20*'#' + '\n')
+                        return path, cost-1, list(explored_set)
+
+                children = self.get_children(current_cell)
+                for child in children:
+                    child.payed = abs(child.coordinate[0] - self.SRC.coordinate[0]) + abs(
+                        child.coordinate[1] - self.SRC.coordinate[1])
+                    child.hurestic = abs(child.coordinate[0] - self.DST.coordinate[0]) + abs(
+                        child.coordinate[1] - self.DST.coordinate[1])
+                    child.total = child.payed + child.hurestic
+                    if self.add_to_open(open, child):
+                        if not explored_set.__contains__(child.coordinate):
+                            open.append(child)
+                            sorted(open, key=lambda GraphNode_ob: GraphNode_ob.total)
+        
+        except Exception as e:
+            print(20*'$')
+            print(sys.exc_info()[-1].tb_lineno, e) 
+            print(20*'$')
+            return False    
+        
+        return False
+
+
+    def add_to_open(self, open, child):
+        for tmp in open:
+            if (child == tmp and child.total >= tmp.total):
+                return False
+        return True
+
 
 
 """
@@ -456,3 +498,6 @@ points to pay attention
 - set is not serializable so use list at last step
 - checking advance debugging in python
 """
+
+# source: https://towardsdatascience.com/a-star-a-search-algorithm-eb495fb156bb
+# source: https://www.annytab.com/a-star-search-algorithm-in-python/

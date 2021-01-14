@@ -46,7 +46,7 @@ client0.connect('ws://127.0.0.1:8000/ws/solve/bfs/', "", "http://localhost:8000"
 
 
 
-/********************** CLIENT 1 ********************/
+/********************** CLIENT 1 ********************
 
 var client1 = new WebSocketClient();
 
@@ -86,12 +86,12 @@ client1.connect('ws://127.0.0.1:8000/ws/solve/bfs/', "", "http://localhost:8000"
 
 
 
-/********************** CLIENT 2 ********************
+/********************** CLIENT 2 ********************/
 
 var client2 = new WebSocketClient();
 
 data2 = {
-    method: "A*",
+    method: "Astar",
     source: [3, 0], 
     destination: [0, 3], 
     black: [[0, 0], [1, 2], [2, 0], [3, 3]], 
@@ -120,7 +120,7 @@ client2.on('connect', function(connection) {
     connection.sendUTF(JSON.stringify(data2));
 });
 
-client1.connect('ws://127.0.0.1:8000/ws/solve/bfs/', "", "http://localhost:8000");
+client2.connect('ws://127.0.0.1:8000/ws/solve/bfs/', "", "http://localhost:8000");
 
 
 /********************** Done ********************/

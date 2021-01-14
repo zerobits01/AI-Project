@@ -81,13 +81,12 @@ class SolverConsumer(WebsocketConsumer):
                             "line": sys.exc_info()[-1].tb_lineno
                 })    
                 
-        elif data['method'].upper() == "A*":
+        elif data['method'].upper() == "ASTAR":
             # calling A* search
             try:      
-                result = ("path", "cost", "explored")
-                         # maze_solver.MazeSolver(data['source'], 
-                         #                         data['destination'],
-                         #                         data['black']).aStar_graph_search()
+                result = maze_solver.MazeSolver(data['source'], 
+                                                 data['destination'],
+                                                  data['black']).aStar_graph_search()
                 
                 if result is False:
                     response = json.dumps({
