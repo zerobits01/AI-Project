@@ -22,24 +22,30 @@ class SolverConsumer(WebsocketConsumer):
         
         data = json.loads(text_data)
         
-        
-        
+  
         if data['method'].upper() == 'BFS':
             # calling bfs search
             try:
                 
-                path, cost, exp_set = maze_solver.MazeSolver(data['source'], 
+                result = maze_solver.MazeSolver(data['source'], 
                                                  data['destination'],
                                                   data['black']).bfs_graph_search()
                 
-                response = json.dumps({
-                    "message": "your choice was BFS",
-                    "path": path,
-                    'cost': cost,
-                    'explored_set': exp_set    
-                })
+                if result is False:
+                    response = json.dumps({
+                        "message": "error has happened",
+                        "err": "unknown error"  
+                    })                      
+                else:
+                    response = json.dumps({
+                        "message": "your choice was BFS",
+                        "path": result[0],
+                        'cost': result[1],
+                        'explored_set': result[2]    
+                    })
                 
                 print(20*'#' + '\n' + "BFS" + '\n' + 20*'#' + '\n')
+            
             except Exception as e:
                 response = json.dumps({
                             "error": e.__str__(),
@@ -48,25 +54,62 @@ class SolverConsumer(WebsocketConsumer):
               
         elif data['method'].upper() == 'IDS':
             # calling IDS search
-            try:
-                response = json.dumps({
-                    "message": "choosed type is IDS"    
-                })
-            except Exception as e:
-                response = json.dumps({
-                            "error": e.__str__()    
-                })
-        
-        elif data['method'].upper() == "A*":
-            # calling A* search
-            try:
-                raise ValueError("A* problem")
+            try:   
+                   
+                result = maze_solver.MazeSolver(data['source'], 
+                                                 data['destination'],
+                                                  data['black']).ids_graph_search()
+                
+                if result is False:
+                    response = json.dumps({
+                        "message": "error has happened",
+                        "err": "unknown error"  
+                    })                      
+                else:
+                    response = json.dumps({
+                        "message": "your choice was IDS",
+                        "path": result[0],
+                        'cost': result[1],
+                        'explored_set': result[2]    
+                    })
+                
+                print(20*'#' + '\n' + "IDS" + '\n' + 20*'#' + '\n')
             
             except Exception as e:
+                response = json.dumps({
+                            "error": e.__str__(),
+                            "line": sys.exc_info()[-1].tb_lineno
+                })    
+                
+        elif data['method'].upper() == "A*":
+            # calling A* search
+            try:      
+                result = ("path", "cost", "explored")
+                         # maze_solver.MazeSolver(data['source'], 
+                         #                         data['destination'],
+                         #                         data['black']).aStar_graph_search()
+                
+                if result is False:
                     response = json.dumps({
-                        "error": e.__str__()    
+                        "message": "error has happened",
+                        "err": "unknown error"  
+                    })                      
+                else:
+                    response = json.dumps({
+                        "message": "your choice was IDS",
+                        "path": result[0],
+                        'cost': result[1],
+                        'explored_set': result[2]    
                     })
-        
+                
+                print(20*'#' + '\n' + "A*" + '\n' + 20*'#' + '\n')
+            
+            except Exception as e:
+                response = json.dumps({
+                            "error": e.__str__(),
+                            "line": sys.exc_info()[-1].tb_lineno
+                })    
+
         else:
             response = json.loads({
                 "error": "method entered is not supported",
