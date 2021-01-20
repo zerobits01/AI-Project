@@ -95,7 +95,7 @@ class SolverConsumer(WebsocketConsumer):
                     })                      
                 else:
                     response = json.dumps({
-                        "message": "your choice was IDS",
+                        "message": "your choice was A*",
                         "path": result[0],
                         'cost': result[1],
                         'explored_set': result[2]    

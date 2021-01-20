@@ -2,53 +2,7 @@ import sys
 import collections
 from queue import PriorityQueue
 from itertools import count
-
-
-class GraphNode:
-    '''
-        This class is the tree GraphNode
-        I will use this for creating my search trees in MazeSolver
-    '''
-
-    
-    def __init__(self, parent, coordinate):
-        '''
-            initializing the GraphNode based on the parent and coordinate
-            @param parent: GraphNodes parent which can be None
-            @type parent: GraphNode
-            @param coordinate: two element list which first one is row the other is col
-            @type coordinate: list
-        '''
-        
-        self.parent = parent
-        self.coordinate = coordinate
-        self.hurestic = 0
-        self.payed = 0 # payed till here
-        self.total = 0 # the whole cost
-
-
-    def __le__(self, other: object):
-        '''
-            checking if other GraphNode is less than this GraphNode or not
-            @type other: GraphNode
-        '''
-        return self.coordinate[0] <= other.coordinate[0] \
-            and self.coordinate[1] <= other.coordinate[1]
-
-
-    def __ge__(self, other: object):
-        '''
-            checking if other GraphNode is greater than this GraphNode or not
-            @type other: GraphNode
-        '''
-        return self.coordinate[0] >= other.coordinate[0] \
-            and self.coordinate[1] >= other.coordinate[1]
-
-
-    def __eq__(self, other: object):
-        return self.coordinate[0] == other.coordinate[0] \
-            and self.coordinate[1] == other.coordinate[1]
-
+from ai_solutions.graph_node import GraphNode
 
 class MazeSolver:
     '''
@@ -256,7 +210,7 @@ class MazeSolver:
             return False
 
     
-    def dls_graph_search_1(self, cut_off):
+    def dls_graph_search(self, cut_off):
         '''This is the graph search implementation of dls Alg
             it is specificly implemented for solving Maze
             
@@ -269,7 +223,6 @@ class MazeSolver:
         for i in range(0, cut_off+1):
             set_limit = set_limit + 4 ** i
         
-        print(f"set limit \t{set_limit}\n")
         explored_set = set()
         level = 0
         try:
@@ -291,10 +244,11 @@ class MazeSolver:
                 if level == cut_off:
                     level = level - 1
                     curr = curr.parent
+                    continue
                 
                 tmp = self.get_specific_child(curr, 'T')
-                curr = tmp if tmp else curr
-                if curr.coordinate not in explored_set:
+                if tmp and tmp.coordinate not in explored_set:
+                    curr = tmp
                     print(f"TOP:\t{curr.coordinate}")
                     level = level + 1
                     explored_set.add(curr.coordinate)
@@ -305,8 +259,8 @@ class MazeSolver:
                     continue
 
                 tmp = self.get_specific_child(curr, 'R')
-                curr = tmp if tmp else curr
-                if curr.coordinate not in explored_set:
+                if tmp and tmp.coordinate not in explored_set:
+                    curr = tmp
                     print(f"TOP:\t{curr.coordinate}")
                     level = level + 1
                     explored_set.add(curr.coordinate)
@@ -317,8 +271,8 @@ class MazeSolver:
                     continue
                     
                 tmp = self.get_specific_child(curr, 'B')
-                curr = tmp if tmp else curr
-                if curr.coordinate not in explored_set:
+                if tmp and tmp.coordinate not in explored_set:
+                    curr = tmp
                     print(f"TOP:\t{curr.coordinate}")
                     level = level + 1
                     explored_set.add(curr.coordinate)
@@ -330,8 +284,8 @@ class MazeSolver:
                     continue
 
                 tmp = self.get_specific_child(curr, 'L')
-                curr = tmp if tmp else curr
-                if curr.coordinate not in explored_set:
+                if tmp and tmp.coordinate not in explored_set:
+                    curr = tmp
                     print(f"TOP:\t{curr.coordinate}")
                     level = level + 1
                     explored_set.add(curr.coordinate)                    
@@ -353,7 +307,7 @@ class MazeSolver:
             return False
     
         
-    def ids_graph_search_1(self):
+    def ids_graph_search(self):
         '''
             solve the maze by ids graph search
             
@@ -364,7 +318,7 @@ class MazeSolver:
                 print(20*"!@#$")
                 print(f"new round\t{cut_off}")
                 print(20*"!@#$")
-                result = self.dls_graph_search_1(cut_off)
+                result = self.dls_graph_search(cut_off)
                 
                 if result != False and isinstance(result[1], int):
                     return result
@@ -380,67 +334,6 @@ class MazeSolver:
             return False
 
 
-    def dls_graph_search(self, src, destination, cut_off, explored_set):
-        '''This is the graph search implementation of dls Alg
-            it is specificly implemented for solving Maze
-            
-            @returns : solution path, cost, count of explored set or False
-        '''
-        try:
-            explored_set.append(src.coordinate)
-
-            if src == destination:
-                path, cost = self.create_path(src)
-                return True, path, cost, explored_set
-
-            if cut_off <= 0:
-                return False, None, None, explored_set
-
-            children = self.get_children(src)
-
-            for child in children:
-                if child.coordinate not in explored_set:
-                    flag, path, cost, explored_set = \
-                        self.dls_graph_search(child, destination, cut_off-1, explored_set)
-                    if flag:
-                        return flag, path, cost, explored_set
-            return False, None, None, explored_set
-
-        except Exception as e:
-            print(20*'$')
-            print(sys.exc_info()[-1].tb_lineno, e) 
-            print(20*'$')
-            return False
-
-
-
-    def ids_graph_search(self):
-        '''
-            solve the maze by ids graph search
-            
-            @returns : solution path, cost, count of explored set  or False
-        '''
-
-        # Store explored_set GraphNodes for each iteration
-        explored_set = set()
-
-        # Repeatedly depth-limit search till the reaches the goal's depth
-        try:
-            for i in count():
-                tmp = self.dls_graph_search(self.SRC, self.DST, i, [])
-                if tmp[0]:
-                    return tmp[1], tmp[2], tmp[3]
-        
-        except Exception as e:
-            print(20*'$')
-            print(sys.exc_info()[-1].tb_lineno, e) 
-            print(20*'$')
-            return False    
-        
-        return False
-
-
-
     def aStar_graph_search(self):
         '''
             solve the maze by a* graph search
@@ -454,8 +347,8 @@ class MazeSolver:
             open.append(self.SRC)
 
             while open:
-                current_cell = open[0]
-                open.remove(current_cell)
+                current_cell = open.pop(0)
+
                 if current_cell.coordinate not in explored_set:
                     explored_set.append(current_cell.coordinate)
 
@@ -471,10 +364,19 @@ class MazeSolver:
                     child.hurestic = abs(child.coordinate[0] - self.DST.coordinate[0]) + abs(
                         child.coordinate[1] - self.DST.coordinate[1])
                     child.total = child.payed + child.hurestic
-                    if self.add_to_open(open, child):
-                        if not explored_set.__contains__(child.coordinate):
+
+                    flag = True
+                    for tmp in open:
+                        if (child == tmp and child.total >= tmp.total):        
+                            flag = False 
+                            break
+                    
+                    if flag:
+                        if child.coordinate not in explored_set:
                             open.append(child)
                             sorted(open, key=lambda GraphNode_ob: GraphNode_ob.total)
+                                
+            return [], 'Inf', list(explored_set)
         
         except Exception as e:
             print(20*'$')
@@ -483,13 +385,6 @@ class MazeSolver:
             return False    
         
         return False
-
-
-    def add_to_open(self, open, child):
-        for tmp in open:
-            if (child == tmp and child.total >= tmp.total):
-                return False
-        return True
 
 
 
@@ -501,3 +396,9 @@ points to pay attention
 
 # source: https://towardsdatascience.com/a-star-a-search-algorithm-eb495fb156bb
 # source: https://www.annytab.com/a-star-search-algorithm-in-python/
+
+# we have to check something important
+'''
+    what if they set the start at 1,1 and the walls arround it?
+'''
+

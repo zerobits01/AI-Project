@@ -86,7 +86,7 @@ client1.connect('ws://127.0.0.1:8000/ws/solve/bfs/', "", "http://localhost:8000"
 
 
 
-/********************** CLIENT 2 ********************/
+/********************** CLIENT 2 ********************
 
 var client2 = new WebSocketClient();
 
@@ -124,3 +124,37 @@ client2.connect('ws://127.0.0.1:8000/ws/solve/bfs/', "", "http://localhost:8000"
 
 
 /********************** Done ********************/
+
+var client3 = new WebSocketClient();
+
+data3 = {
+    method: "IDS",
+    source: [3, 0], 
+    destination: [0, 3], 
+    black: [[0, 0], [1, 2], [2, 0], [3, 3]], 
+    size: 4
+}
+
+
+client3.on('connectFailed', function(error) {
+    console.log('Connect Error: ' + error.toString());
+});
+
+client3.on('connect', function(connection) {
+    console.log('WebSocket client connected');
+    connection.on('error', function(error) {
+        console.log("Connection Error: " + error.toString());
+    });
+    connection.on('close', function() {
+        console.log('echo-protocol Connection Closed');
+    });
+    connection.on('message', function(message) {
+        if (message.type === 'utf8') {
+            console.log("Received: '" + message.utf8Data + "'");
+        }
+    });
+
+    connection.sendUTF(JSON.stringify(data3));
+});
+
+client3.connect('ws://127.0.0.1:8000/ws/solve/bfs/', "", "http://localhost:8000");
