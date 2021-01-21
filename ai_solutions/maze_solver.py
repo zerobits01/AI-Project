@@ -298,7 +298,7 @@ class MazeSolver:
                 level = level - 1
                 curr = curr.parent   
                          
-            return False
+            return False, list(explored_set)
                 
         except Exception as e:
             print(20*'$')
@@ -314,6 +314,7 @@ class MazeSolver:
             @returns : solution path, cost, count of explored set  or False
         '''
         try:
+            explored_set_tmp = []
             for cut_off in count(start=1):
                 print(20*"!@#$")
                 print(f"new round\t{cut_off}")
@@ -323,8 +324,11 @@ class MazeSolver:
                 if result != False and isinstance(result[1], int):
                     return result
                 
-                if result != False and result[2].__len__() == 400:
-                    return [], 'Inf', result[2]  # no answer found
+                if result == False:
+                    continue
+                
+                if result[0] == False:
+                    return [], 'Inf', result[1]  # no answer found
 
     
         except Exception as e:
@@ -341,13 +345,13 @@ class MazeSolver:
             @returns : solution path, cost, count of explored set 
         '''
         try:
-            open = []
+            to_check = []
             explored_set = []
 
-            open.append(self.SRC)
+            to_check.append(self.SRC)
 
-            while open:
-                current_cell = open.pop(0)
+            while to_check:
+                current_cell = to_check.pop(0)
 
                 if current_cell.coordinate not in explored_set:
                     explored_set.append(current_cell.coordinate)
@@ -366,15 +370,15 @@ class MazeSolver:
                     child.total = child.payed + child.hurestic
 
                     flag = True
-                    for tmp in open:
+                    for tmp in to_check:
                         if (child == tmp and child.total >= tmp.total):        
                             flag = False 
                             break
                     
                     if flag:
                         if child.coordinate not in explored_set:
-                            open.append(child)
-                            sorted(open, key=lambda GraphNode_ob: GraphNode_ob.total)
+                            to_check.append(child)
+                            sorted(to_check, key=lambda GraphNode_ob: GraphNode_ob.total)
                                 
             return [], 'Inf', list(explored_set)
         

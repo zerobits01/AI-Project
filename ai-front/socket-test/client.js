@@ -128,7 +128,7 @@ client2.connect('ws://127.0.0.1:8000/ws/solve/bfs/', "", "http://localhost:8000"
 var client3 = new WebSocketClient();
 
 data3 = {
-    method: "IDS",
+    method: "ids",
     source: [3, 0], 
     destination: [0, 3], 
     black: [[0, 0], [1, 2], [2, 0], [3, 3]], 
