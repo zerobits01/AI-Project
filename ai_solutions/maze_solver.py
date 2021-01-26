@@ -378,7 +378,7 @@ class MazeSolver:
                     if flag:
                         if child.coordinate not in explored_set:
                             to_check.append(child)
-                            sorted(to_check, key=lambda GraphNode_ob: GraphNode_ob.total)
+                            to_check = sorted(to_check, key=lambda GraphNode_ob: GraphNode_ob.total)
                                 
             return [], 'Inf', list(explored_set)
         
@@ -389,8 +389,6 @@ class MazeSolver:
             return False    
         
         return False
-
-
 
 """
 points to pay attention
